@@ -2,6 +2,7 @@ const redux = require("redux")
 const createStore = redux.createStore
 
 const CAKE_ORDERED = 'CAKE_ORDERED';
+const RESTOCK_CAKE = 'RESTOCK_CAKE';
 
 const initialState = {
     totalQuantity: 10,
@@ -14,6 +15,15 @@ const orderCake = () => {
     }
 }
 
+const restockCake = (qty = 1) => {
+    return {
+        type: RESTOCK_CAKE,
+        payload: {
+            quantity: qty
+        }
+    }
+}
+
 // Reducer
 const reducer = (state=initialState, action) => {
     switch(action.type){
@@ -21,6 +31,11 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 totalQuantity: state.totalQuantity - 1
+            }
+        case RESTOCK_CAKE:
+            return {
+                ...state,
+                totalQuantity: state.totalQuantity + action.payload.quantity
             }
         default:
             return state
@@ -39,6 +54,8 @@ store.dispatch(orderCake())
 store.dispatch(orderCake())
 store.dispatch(orderCake())
 
-unsubscribe()
+store.dispatch(restockCake(3))
+// store.dispatch(restockCake())
 
-store.dispatch(orderCake())
+
+unsubscribe()
