@@ -1,11 +1,18 @@
 const redux = require("redux")
 const createStore = redux.createStore
+const combineReducers = redux.combineReducers
 
 const CAKE_ORDERED = 'CAKE_ORDERED';
 const RESTOCK_CAKE = 'RESTOCK_CAKE';
+const ICECREAM_ORDERED = 'ICECREAM_ORDERED';
+const RESTOCK_ICECREAM = 'RESTOCK_ICECREAM';
 
-const initialState = {
+const initialCakeState = {
     totalQuantity: 10,
+}
+
+const initialIceCreamState = {
+    numOfIceCreams: 50,
 }
 // Action Creator
 const orderCake = () => {
@@ -24,8 +31,24 @@ const restockCake = (qty = 1) => {
     }
 }
 
-// Reducer
-const reducer = (state=initialState, action) => {
+const orderIceCream = () => {
+    return {
+        type: ICECREAM_ORDERED,
+        payload: {}
+    }
+}
+
+const restockIceCream = (qty = 1) => {
+    return {
+        type: RESTOCK_ICECREAM,
+        payload: {
+            quantity: qty
+        }
+    }
+}
+
+// Cake-Reducer 
+const cakeReducer = (state=initialCakeState, action) => {
     switch(action.type){
         case CAKE_ORDERED:
             return {
@@ -42,8 +65,32 @@ const reducer = (state=initialState, action) => {
     }
 }
 
+// Cake-Reducer 
+const iceCreamReducer = (state=initialIceCreamState, action) => {
+    switch(action.type){
+        case ICECREAM_ORDERED:
+            return {
+                ...state,
+                numOfIceCreams: state.numOfIceCreams - 1
+            }
+        case RESTOCK_ICECREAM:
+            return {
+                ...state,
+                numOfIceCreams: state.numOfIceCreams + action.payload.quantity
+            }
+        default:
+            return state
+    }
+}
+
+// Combining the Reducers
+const rootStore = combineReducers({
+    cake: cakeReducer,
+    iceCream: iceCreamReducer
+})
+
 // 1. Redux Store Holding the Application State
-const store = createStore(reducer)
+const store = createStore(rootStore)
 
 // 2. Allows acces to state via getState()
 console.log(`Initial State`, store.getState())
@@ -52,6 +99,7 @@ const unsubscribe = store.subscribe(() => console.log(`updated State, `, store.g
 
 store.dispatch(orderCake())
 store.dispatch(orderCake())
+store.dispatch(orderIceCream())
 store.dispatch(orderCake())
 
 store.dispatch(restockCake(3))
