@@ -103,6 +103,7 @@ store.dispatch(orderIceCream())
 store.dispatch(orderCake())
 
 store.dispatch(restockCake(3))
+store.dispatch(restockIceCream(101))
 // store.dispatch(restockCake())
 
 
